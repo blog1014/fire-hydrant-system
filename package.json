@@ -1,9 +1,11 @@
 {
   "name": "fire-hydrant-system",
   "version": "2.7.0",
-  "main": "api/index.js", 
+  "description": "中山市消防栓精准定位与导航系统",
+  "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -11,7 +13,10 @@
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.2"
   },
-  "engines": {
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": { 
     "node": ">=18.0.0"
   }
 }

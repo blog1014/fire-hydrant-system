@@ -1428,17 +1428,27 @@ app.delete('/api/hydrants/:id', authenticateToken, (req, res) => {
 startAutoSave();
 
 
-console.log('=================================');
-console.log('🔥 消防栓定位与导航系统服务器启动成功');
-console.log('=================================');
-console.log('📂 项目根目录:', __dirname);
-console.log('📁 数据目录:', DATA_DIR);
-console.log('📄 数据库文件:', DATA_FILE);
-console.log('');
-console.log('🔑 测试账号信息:');
-console.log('管理员账号: admin / admin123');
-console.log('消防员账号: firefighter / 123456');
-console.log('采集员账号: collector / 123456');
-console.log('=================================');
+if (process.env.VERCEL) {
+   
+    console.log('✅ Vercel Serverless 环境启动');
+    module.exports = app;
+} else {
 
-module.exports = app;
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log('=================================');
+        console.log('🔥 消防栓定位与导航系统服务器启动成功');
+        console.log('=================================');
+        console.log(`🌐 服务器运行在端口: ${PORT}`);
+        console.log('📂 项目根目录:', __dirname);
+        console.log('📁 数据目录:', DATA_DIR);
+        console.log('📄 数据库文件:', DATA_FILE);
+        console.log('');
+        console.log('🔑 测试账号信息:');
+        console.log('管理员账号: admin / admin123');
+        console.log('消防员账号: firefighter / 123456');
+        console.log('采集员账号: collector / 123456');
+        console.log('=================================');
+    });
+    module.exports = app;
+}
