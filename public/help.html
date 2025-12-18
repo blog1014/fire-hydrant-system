@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>帮助中心 - 消防栓定位与导航系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .help-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 头部导航 */
+        .help-header {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb a {
+            color: #1677ff;
+            text-decoration: none;
+        }
+
+        .breadcrumb span {
+            color: #999;
+            margin: 0 5px;
+        }
+
+        .help-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 侧边栏 */
+        .help-sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 2px solid #1677ff;
+            padding-bottom: 5px;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 10px;
+        }
+
+        .nav-item a {
+            display: block;
+            padding: 10px 15px;
+            color: #666;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .nav-item a:hover {
+            background: #f0f9ff;
+            color: #1677ff;
+        }
+
+        .nav-item a.active {
+            background: #1677ff;
+            color: white;
+        }
+
+        /* 内容区域 */
+        .help-content {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            min-height: 500px;
+        }
+
+        .content-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .section-content {
+            color: #555;
+        }
+
+        .section-content p {
+            margin-bottom: 15px;
+        }
+
+        .section-content ul,
+        .section-content ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .section-content li {
+            margin-bottom: 8px;
+        }
+
+        /* 提示框样式 */
+        .tip-box {
+            background: #f0f9ff;
+            border-left: 4px solid #1677ff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tip-title {
+            font-weight: 600;
+            color: #1677ff;
+            margin-bottom: 5px;
+        }
+
+        .warning-box {
+            background: #fff8e6;
+            border-left: 4px solid #faad14;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .warning-title {
+            font-weight: 600;
+            color: #faad14;
+            margin-bottom: 5px;
+        }
+
+        /* 返回按钮 */
+        .back-button {
+            display: inline-block;
+            background: #1677ff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: #0958d9;
+        }
+
+        /* 响应式设计 */
+        @media (min-width: 768px) {
+            .help-main {
+                display: flex;
+                gap: 20px;
+            }
+
+            .help-sidebar {
+                width: 250px;
+                flex-shrink: 0;
+            }
+
+            .help-content {
+                flex: 1;
+            }
+        }
+
+        /* 页脚 */
+        .help-footer {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-size: 14px;
+            margin-top: 40px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="help-container">
+        <!-- 头部导航 -->
+        <div class="help-header">
+            <div class="breadcrumb">
+                <a href="index.html">首页</a>
+                <span>></span>
+                <span>帮助中心</span>
+            </div>
+            <h1 class="help-title">帮助中心</h1>
+        </div>
+
+        <div class="help-main">
+            <!-- 侧边栏导航 -->
+            <div class="help-sidebar">
+                <h3 class="sidebar-title">帮助导航</h3>
+                <ul class="nav-list" id="navList">
+                    <!-- 导航项会通过JavaScript动态生成 -->
+                </ul>
+            </div>
+
+            <!-- 内容区域 -->
+            <div class="help-content" id="helpContent">
+                <!-- 内容会通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- 返回按钮 -->
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="index.html" class="back-button">
+                <i class="fa fa-arrow-left"></i> 返回系统
+            </a>
+        </div>
+
+        <!-- 页脚 -->
+        <div class="help-footer">
+            <p>© 2024 消防栓定位与导航系统 v1.0</p>
+            <p>如有问题，请联系系统管理员</p>
+        </div>
+    </div>
+
+    <script>
+        // 帮助内容数据
+        const helpSections = [
+            {
+                id: 'quick-start',
+                title: '快速上手教程',
+                content: `
+                    <div class="content-section">
+                        <h2 class="section-title">快速上手教程</h2>
+                        <div class="section-content">
+                            <p>欢迎使用消防栓定位与导航系统！本教程将帮助您快速掌握系统的基本操作。</p>
+                            
+                            <h3>第一步：登录系统</h3>
+                            <p>1. 打开系统后，您将看到登录界面</p>
+                            <p>2. 输入您的账号和密码</p>
+                            <p>3. 选择正确的用户角色（管理员、消防员或采集员）</p>
+                            <p>4. 点击"登录"按钮进入系统</p>
+                            
+                            <div class="tip-box">
+                                <div class="tip-title">提示</div>
+                                <p>请确保选择与账号匹配的角色，否则将无法正常登录。</p>
+                            </div>
+                            
+                            <h3>第二步：地图基本操作</h3>
+                            <p>1. 登录后，您将看到中山市的地图界面</p>
+                            <p>2. 地图上图标表示消防栓位置</p>
+                            <p>3. 点击右下角定位按钮可以获取您当前的位置</p>
+                            <p>4. 双击地图可以放大，使用鼠标滚轮可以缩放地图</p>
+                            
+                            <h3>第三步：查看消防栓详情</h3>
+                            <p>1. 点击地图上的消防栓图标</p>
+                            <p>2. 底部会弹出该消防栓的详细信息</p>
+                            <p>3. 您可以查看消防栓的编号、地址、状态、水压等信息</p>
+                            
+                            <h3>第四步：导航</h3>
+                            <p>1. 在地图点击想导航的消防栓</p>
+                            <p>2. 系统将规划从您当前位置到消防栓的最佳路线</p>
+                            <p>3. 您可以选择最快捷、最短距离或避开高速等导航策略</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'map-guide',
+                title: '地图操作指南',
+                content: `
+                    <div class="content-section">
+                        <h2 class="section-title">地图操作指南</h2>
+                        <div class="section-content">
+                            <p>本系统基于高德地图提供强大的地图功能，以下是详细的操作说明：</p>
+                            
+                            <h3>一、地图控制</h3>
+                            <ul>
+                                <li><strong>平移地图</strong>：按住鼠标左键拖动地图</li>
+                                <li><strong>缩放地图</strong>：使用鼠标滚轮，或双击地图放大</li>
+                                <li><strong>回到当前位置</strong>：点击右下角的定位按钮</li>
+                            </ul>
+                            
+                            <h3>二、消防栓操作</h3>
+                            <ul>
+                                <li><strong>查看消防栓</strong>：点击地图上的消防栓图标</li>
+                                <li><strong>识别状态</strong>：
+                                    <ul>
+                                        <li>绿色✓：正常状态</li>
+                                        <li>黄色!：损坏状态</li>
+                                        <li>红色×：废弃状态</li>
+                                    </ul>
+                                </li>
+                                <li><strong>筛选消防栓</strong>：点击顶部筛选按钮，按状态或类型筛选</li>
+                                <li><strong>搜索消防栓</strong>：在顶部搜索框输入编号或地址关键词</li>
+                            </ul>
+                            
+                            <h3>三、定位功能</h3>
+                            <p>1. <strong>高精度定位</strong>：点击右下角定位按钮获取GPS定位</p>
+                            <p>2. <strong>定位状态</strong>：蓝色图标表示您当前的位置</p>
+                            <p>3. <strong>定位精度</strong>：定位成功后显示精度范围（如±10米）</p>
+                            
+                            <div class="warning-box">
+                                <div class="warning-title">注意</div>
+                                <p>首次定位可能需要10-30秒时间，请确保已开启浏览器的定位权限。</p>
+                            </div>
+                            
+                            <h3>四、导航功能</h3>
+                            <ul>
+                                <li><strong>导航策略</strong>：可选择最快捷、最短距离或避开高速</li>
+                                <li><strong>查看路线</strong>：导航面板显示详细的路线步骤和距离</li>
+                            </ul>
+                            
+                            <h3>五、筛选与搜索</h3>
+                            <p>1. <strong>半径筛选</strong>：可以筛选1公里、5公里、10公里范围内的消防栓</p>
+                            <p>2. <strong>状态筛选</strong>：按正常、损坏、废弃状态筛选</p>
+                            <p>3. <strong>类型筛选</strong>：按地上、地下类型筛选</p>
+                            <p>4. <strong>关键词搜索</strong>：搜索消防栓编号、名称或地址</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'suggestions',
+                title: '意见与建议收集',
+                content: `
+                    <div class="content-section">
+                        <h2 class="section-title">意见与建议收集</h2>
+                        <div class="section-content">
+                            <p>我们高度重视用户的反馈，您的意见和建议将帮助我们改进系统。</p>
+                            
+                            <h3>反馈渠道</h3>
+                            <ul>
+                                <li><strong>系统内反馈</strong>：联系系统管理员提交反馈</li>
+                                <li><strong>紧急问题</strong>：拨打技术支持电话：XXX-xxx-xxxx</li>
+                                <li><strong>邮件反馈</strong>：发送邮件至 xxxxxxxx</li>
+                            </ul>
+                            
+                            <h3>反馈内容建议</h3>
+                            <p>为了更好地解决问题，请提供以下信息：</p>
+                            <ol>
+                                <li>问题发生的具体时间</li>
+                                <li>您的账号和角色信息</li>
+                                <li>详细的问题描述</li>
+                                <li>相关的截图或录屏</li>
+                                <li>您的设备信息和浏览器版本</li>
+                            </ol>
+                            
+                            <h3>常见反馈类型</h3>
+                            <div class="tip-box">
+                                <div class="tip-title">功能建议</div>
+                                <p>如果您有新的功能想法或改进建议，请详细描述使用场景和预期效果。</p>
+                            </div>
+                            
+                            <div class="tip-box">
+                                <div class="tip-title">问题报告</div>
+                                <p>报告系统错误、定位不准确、数据异常等问题。</p>
+                            </div>
+                            
+                            <div class="tip-box">
+                                <div class="tip-title">使用体验</div>
+                                <p>分享您的使用感受，提出界面优化、操作流程改进等建议。</p>
+                            </div>
+                            
+                            <h3>反馈处理流程</h3>
+                            <p>1. 提交反馈后，我们将在24小时内确认收到</p>
+                            <p>2. 一般问题在3个工作日内给出解决方案</p>
+                            <p>3. 复杂问题会在7个工作日内提供处理进展</p>
+                            <p>4. 功能建议会定期评估，并在系统更新时考虑采纳</p>
+                            
+                            <div class="warning-box">
+                                <div class="warning-title">重要提示</div>
+                                <p>请勿在反馈中包含敏感信息，如密码、个人隐私数据等。</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'privacy',
+                title: '隐私政策',
+                content: `
+                    <div class="content-section">
+                        <h2 class="section-title">隐私政策</h2>
+                        <div class="section-content">
+                            <h3>一、信息收集</h3>
+                            <p>本系统收集的信息仅限于：</p>
+                            <ul>
+                                <li>账号信息：用户名、角色、真实姓名</li>
+                                <li>位置信息：定位数据（用于导航和位置服务）</li>
+                                <li>操作记录：登录时间、导航记录、采集记录</li>
+                                <li>设备信息：浏览器类型、IP地址（用于安全审计）</li>
+                            </ul>
+                            
+                            <h3>二、信息使用</h3>
+                            <p>收集的信息仅用于：</p>
+                            <ul>
+                                <li>提供消防栓定位和导航服务</li>
+                                <li>系统功能优化和性能改进</li>
+                                <li>安全审计和异常行为检测</li>
+                                <li>法律法规要求的数据记录</li>
+                            </ul>
+                            
+                            <h3>三、信息共享</h3>
+                            <p>我们承诺：</p>
+                            <ul>
+                                <li>不会向第三方出售或出租您的个人信息</li>
+                                <li>仅在法律法规要求时提供必要信息</li>
+                                <li>与消防部门内部系统共享必要的工作数据</li>
+                            </ul>
+                            
+                            <h3>四、数据安全</h3>
+                            <ul>
+                                <li>采用加密技术保护数据传输</li>
+                                <li>定期进行安全审计和漏洞扫描</li>
+                                <li>严格限制数据访问权限</li>
+                                <li>制定数据备份和恢复方案</li>
+                            </ul>
+                                         
+                            <h3>五、用户权利</h3>
+                            <p>您拥有以下权利：</p>
+                            <ul>
+                                <li>查询个人数据的使用情况</li>
+                                <li>更正不准确的个人信息</li>
+                                <li>删除不再需要的个人数据（法律法规允许范围内）</li>
+                                <li>获取个人数据的副本</li>
+                            </ul>
+                            
+                            <div class="warning-box">
+                                <div class="warning-title">重要声明</div>
+                                <p>本系统为消防专用系统，所有数据收集和处理均基于消防工作需求。使用本系统即表示您同意本隐私政策。</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'agreement',
+                title: '用户协议',
+                content: `
+                    <div class="content-section">
+                        <h2 class="section-title">用户协议</h2>
+                        <div class="section-content">
+                            <p>请仔细阅读本用户协议，使用本系统即表示您同意遵守以下条款：</p>
+                            
+                            <h3>一、使用许可</h3>
+                            <p>1. 本系统授予您有限的、非独占的、不可转让的使用许可</p>
+                            <p>2. 仅限于消防相关工作使用</p>
+                            <p>3. 不得用于商业用途或向第三方提供服务</p>
+                            
+                            <h3>二、用户义务</h3>
+                            <p>您同意：</p>
+                            <ul>
+                                <li>使用真实、准确的账号信息</li>
+                                <li>妥善保管账号密码，不与他人共享</li>
+                                <li>仅上传真实的消防栓数据</li>
+                                <li>遵守相关法律法规和消防规定</li>
+                                <li>不进行任何危害系统安全的行为</li>
+                            </ul>
+                            
+                            <h3>三、禁止行为</h3>
+                            <p>严禁以下行为：</p>
+                            <ul>
+                                <li>尝试破解、反编译系统代码</li>
+                                <li>大量请求干扰系统运行</li>
+                                <li>上传虚假或恶意数据</li>
+                                <li>窃取他人账号或数据</li>
+                                <li>传播系统漏洞或敏感信息</li>
+                            </ul>
+                            
+                            <h3>四、数据责任</h3>
+                            <p>1. 您上传的数据应确保真实性和准确性</p>
+                            <p>2. 因虚假数据造成的后果由上传者承担</p>
+                            <p>3. 系统管理员有权审核和删除不当数据</p>
+                            
+                            <h3>五、免责声明</h3>
+                            <p>系统提供者不承担：</p>
+                            <ul>
+                                <li>因不可抗力导致的服务中断</li>
+                                <li>用户误操作造成的损失</li>
+                                <li>第三方服务（如地图服务）的问题</li>
+                                <li>用户违反本协议造成的后果</li>
+                            </ul>
+                            
+                            <h3>六、协议修改</h3>
+                            <p>1. 我们有权根据需要修改本协议</p>
+                            <p>2. 重大修改会提前通知用户</p>
+                            <p>3. 继续使用系统视为接受修改后的协议</p>
+                            
+                            <h3>七、协议终止</h3>
+                            <p>以下情况可能终止您的使用权限：</p>
+                            <ul>
+                                <li>严重违反本协议</li>
+                                <li>账号长期未使用</li>
+                                <li>工作调动或离职</li>
+                                <li>系统服务终止</li>
+                            </ul>
+                            
+                            <div class="warning-box">
+                                <div class="warning-title">重要提示</div>
+                                <p>本系统为消防工作专用工具，请严格遵守消防工作纪律和保密要求。</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'copyright',
+                title: '版权信息',
+                content: `
+                    <div class="content-section">
+                        <h2 class="section-title">版权信息</h2>
+                        <div class="section-content">
+                            <p>© 2025 消防栓定位与导航系统 版权所有</p>
+                            
+                            <h3>一、系统版权</h3>
+                            <ul>
+                                <li>系统名称：消防栓定位与导航系统</li>
+                                <li>版本号：v1.0</li>
+                                <li>开发单位：第二组</li>
+                                <li>技术支持：第二组</li>
+                            </ul>
+                            
+                            <h3>二、版权声明</h3>
+                            <p>1. 本系统的所有源代码、界面设计、文档资料受著作权法保护</p>
+                            <p>2. 未经书面许可，不得复制、修改、分发系统任何部分</p>
+                            <p>3. 系统图标、界面元素等视觉设计受版权保护</p>
+                            
+                            <h3>三、第三方资源</h3>
+                            <p>本系统使用了以下第三方资源：</p>
+                            <ul>
+                                <li>高德地图API - 提供地图和导航服务</li>
+                                <li>Font Awesome - 图标字体库</li>
+                                <li>开源JavaScript库</li>
+                            </ul>
+                            <p>上述资源遵循各自的开源协议或商业授权。</p>
+                            
+                            <h3>四、数据版权</h3>
+                            <p>1. 消防栓数据归中山市消防部门所有</p>
+                            <p>2. 用户上传的照片和数据归上传者及消防部门共有</p>
+                            <p>3. 禁止未经授权使用系统数据</p>
+                            
+                            <h3>五、授权使用</h3>
+                            <p>授权范围：</p>
+                            <ul>
+                                <li>授权给消防部门内部使用</li>
+                                <li>仅限于消防工作相关用途</li>
+                                <li>不得用于商业目的</li>
+                                <li>不得向第三方提供系统访问</li>
+                            </ul>
+                            
+                            <h3>六、侵权举报</h3>
+                            <p>如发现版权侵权行为，请联系：</p>
+                            <ul>
+                                <li>联系人：系统管理员</li>
+                                <li>电话：xxx-xxxx-xxxx</li>
+                                <li>邮箱：xxxxxxxxxxxx</li>
+                            </ul>
+                            
+                            <div class="tip-box">
+                                <div class="tip-title">使用说明</div>
+                                <p>本系统为消防工作专用工具，请勿在任何公开场合展示系统界面或数据。</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function () {
+            const navList = document.getElementById('navList');
+            const helpContent = document.getElementById('helpContent');
+
+            // 生成导航菜单
+            helpSections.forEach((section, index) => {
+                const li = document.createElement('li');
+                li.className = 'nav-item';
+                li.innerHTML = `<a href="#${section.id}" data-index="${index}">${section.title}</a>`;
+                navList.appendChild(li);
+            });
+
+            // 默认显示第一个部分
+            if (helpSections.length > 0) {
+                showSection(0);
+                setActiveNav(0);
+            }
+
+            // 导航点击事件
+            navList.addEventListener('click', function (e) {
+                if (e.target.tagName === 'A') {
+                    e.preventDefault();
+                    const index = parseInt(e.target.dataset.index);
+                    showSection(index);
+                    setActiveNav(index);
+
+                    // 滚动到顶部
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+
+            // 处理URL哈希
+            const hash = window.location.hash.replace('#', '');
+            if (hash) {
+                const index = helpSections.findIndex(section => section.id === hash);
+                if (index !== -1) {
+                    showSection(index);
+                    setActiveNav(index);
+                }
+            }
+
+            function showSection(index) {
+                if (index >= 0 && index < helpSections.length) {
+                    helpContent.innerHTML = helpSections[index].content;
+                    // 更新URL哈希（不刷新页面）
+                    window.history.replaceState(null, null, `#${helpSections[index].id}`);
+                }
+            }
+
+            function setActiveNav(index) {
+                const navLinks = navList.querySelectorAll('a');
+                navLinks.forEach((link, i) => {
+                    if (i === index) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+        });
+
+        // 在 help.html 的脚本中添加
+            const backButton = document.querySelector('.back-button');
+            if (backButton) {
+                backButton.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    // 如果有保存的状态，尝试恢复
+                    const savedState = sessionStorage.getItem('appState');
+                    if (savedState) {
+                        sessionStorage.removeItem('appState');
+                    }
+
+                    // 返回主系统
+                    window.location.href = 'index.html';
+                });
+            }
+
+        
+
+
+    </script>
+</body>
+
+</html>

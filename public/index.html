@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>消防栓定位与导航系统</title>
+
+    <!-- 正确的安全密钥配置 -->
+    <script type="text/javascript">
+        window._AMapSecurityConfig = {
+            securityJsCode: '031e6ee88e1cffecac8bd7a0d1bb37c2',
+        };
+    </script>
+
+    <!-- 使用正确的Web端密钥 -->
+    <script
+        src="https://webapi.amap.com/maps?v=2.0&key=f95015c9f43771c0346dda6f02d09a5a&plugin=AMap.Geolocation,AMap.ToolBar,AMap.Driving">
+        </script>
+
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- 登录界面 -->
+    <div class="login-panel" id="loginPanel">
+        <div class="login-title">消防栓定位与导航系统</div>
+        <div class="login-form">
+            <div class="form-group">
+                <label class="form-label">账号</label>
+                <input type="text" class="form-input" id="loginAccount" placeholder="请输入账号" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">密码</label>
+                <input type="password" class="form-input" id="loginPwd" placeholder="请输入密码" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">用户角色</label>
+                <select class="role-select" id="userRole">
+                    <option value="firefighter">消防员</option>
+                    <option value="collector">采集员</option>
+                    <option value="admin">管理员</option>
+                </select>
+            </div>
+            <div class="login-tips">
+                <div class="tip-note">请确保账号与角色一致以保障登录成功</div>
+            </div>
+
+            <button class="login-btn" id="loginBtn">登录</button>
+        </div>
+    </div>
+    <!-- 地图界面 -->
+    <div id="mapContainer"></div>
+
+    <!-- 顶部搜索栏 -->
+    <div class="top-bar" id="topBar">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="搜索消防栓编号/名称/地址..." />
+            <button class="btn btn-search" id="searchBtn">
+                <i class="fa fa-search"></i>
+            </button>
+            <button class="btn btn-filter" id="filterBtn">
+                <i class="fa fa-filter"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 底部工具栏 -->
+    <div class="bottom-bar" id="bottomBar">
+        <div class="bottom-btn active" id="mapBtn">
+            <i class="fa fa-map-marker"></i>
+            <span>地图</span>
+        </div>
+        <div class="bottom-btn" id="offlineBtn">
+            <i class="fa fa-download"></i>
+            <span>离线</span>
+        </div>
+        <div class="bottom-btn" id="mineBtn">
+            <i class="fa fa-user"></i>
+            <span>我的</span>
+        </div>
+    </div>
+
+    <!-- 右下角定位按钮 -->
+    <button class="floating-locate-btn" id="floatingLocateBtn">
+        <i class="fa fa-location-arrow"></i>
+    </button>
+
+    <!-- 详情面板 -->
+    <div class="detail-panel" id="detailPanel">
+        <div class="panel-header">
+            <div class="panel-title" id="detailName"></div>
+            <div class="close-panel" id="closeDetailBtn">
+                <i class="fa fa-times"></i>
+            </div>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">编号：</span>
+            <span id="detailId"></span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">地址：</span>
+            <span id="detailAddress"></span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">类型：</span>
+            <span id="detailType"></span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">状态：</span>
+            <span id="detailStatusText"></span>
+            <span class="status" id="detailStatus"></span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">水压：</span>
+            <span id="detailPressure"></span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">上次检修：</span>
+            <span id="detailCheck"></span>
+        </div>
+        <button class="operate-btn collect-btn" id="collectBtn">采集/编辑</button>
+        <button class="operate-btn" id="startNavBtn">驾车导航到这里</button>
+    </div>
+
+    <!-- 导航面板 -->
+    <div class="nav-panel" id="navPanel">
+        <div class="nav-header">
+            <div class="nav-back" id="closeNavBtn">
+                <i class="fa fa-arrow-left"></i>
+            </div>
+            <div class="nav-title" id="navTitle">导航到消防栓</div>
+        </div>
+    
+        <!-- 导航策略选择器 -->
+        <div class="policy-selector">
+            <button class="policy-btn active" data-policy="0">
+                <i class="fa fa-bolt"></i>
+                <span>最快捷</span>
+            </button>
+            <button class="policy-btn" data-policy="2">
+                <i class="fa fa-map-signs"></i>
+                <span>最短距离</span>
+            </button>
+            <button class="policy-btn" data-policy="1">
+                <i class="fa fa-road"></i>
+                <span>避开高速</span>
+            </button>
+        </div>
+    
+        <!-- 路线信息摘要 -->
+        <div class="nav-route-info" id="navRouteInfo" style="display: none;">
+            <div class="route-summary">
+                <div class="route-item">
+                    <i class="fa fa-road"></i>
+                    <div>
+                        <div class="route-label">总距离</div>
+                        <div class="route-value" id="routeDistance">--</div>
+                    </div>
+                </div>
+                <div class="route-item">
+                    <i class="fa fa-clock-o"></i>
+                    <div>
+                        <div class="route-label">预计时间</div>
+                        <div class="route-value" id="routeTime">--</div>
+                    </div>
+                </div>
+                <div class="route-item">
+                    <i class="fa fa-taxi"></i>
+                    <div>
+                        <div class="route-label">导航方案</div>
+                        <div class="route-value" id="routePolicy">最快捷</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- 导航状态 -->
+        <div class="nav-status" id="navStatus" style="display: none">
+            <div>
+                <span class="nav-label">路线信息：</span>
+                <span class="nav-distance" id="navDistance">正在规划...</span>
+            </div>
+            <div>
+                <span class="nav-time" id="navTime"></span>
+            </div>
+        </div>
+    
+        <!-- 导航地图容器 -->
+        <div class="nav-map" id="navMapContainer"></div>
+    
+        <!-- 路线步骤 -->
+        <div class="nav-steps" id="navSteps">
+            <div class="nav-loading" id="navLoading">
+                <i class="fa fa-spinner fa-spin"></i>
+                <div>正在规划驾车路线，请稍候...</div>
+            </div>
+            <div class="nav-error" id="navError" style="display: none">
+                <i class="fa fa-exclamation-triangle"></i>
+                <div>路线规划失败</div>
+                <div style="font-size: 13px; margin-top: 5px; color: #666" id="navErrorMsg"></div>
+                <button class="retry-btn" id="retryNavBtn">重新规划</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 采集面板 -->
+    <div class="collect-panel" id="collectPanel">
+        <div class="collect-header">
+            <div class="collect-title">消防栓信息采集</div>
+            <div class="close-collect" id="closeCollectBtn">
+                <i class="fa fa-times"></i>
+            </div>
+        </div>
+        <div class="collect-tabs">
+            <div class="collect-tab active" data-tab="baseInfo">基础信息</div>
+            <div class="collect-tab" data-tab="photo">照片采集</div>
+        </div>
+        <div class="collect-content active" id="baseInfoContent">
+            <div class="form-group">
+                <label class="form-label">消防栓类型</label>
+                <select class="form-select" id="collectType">
+                    <option value="地上">地上</option>
+                    <option value="地下">地下</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">状态</label>
+                <select class="form-select" id="collectStatus">
+                    <option value="正常">正常</option>
+                    <option value="损坏">损坏</option>
+                    <option value="废弃">废弃</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">水源类型</label>
+                <select class="form-select" id="collectWaterSource">
+                    <option value="市政供水">市政供水</option>
+                    <option value="自备水源">自备水源</option>
+                    <option value="其他">其他</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">水压（MPa）</label>
+                <input type="number" class="form-input" id="collectPressure" placeholder="可选，如0.4" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">周边参照物</label>
+                <input type="text" class="form-input" id="collectReference" placeholder="如XX商铺西侧5米" />
+            </div>
+        </div>
+        <div class="collect-content" id="photoContent">
+            <div class="form-group">
+                <label class="form-label">请拍摄3张照片（正面/侧面/铭牌）</label>
+                <div class="photo-group">
+                    <div class="photo-item" id="photoFront">
+                        <i class="fa fa-camera"></i>
+                        <span>正面</span>
+                    </div>
+                    <div class="photo-item" id="photoSide">
+                        <i class="fa fa-camera"></i>
+                        <span>侧面</span>
+                    </div>
+                    <div class="photo-item" id="photoPlate">
+                        <i class="fa fa-camera"></i>
+                        <span>铭牌</span>
+                    </div>
+                </div>
+                <div class="photo-tip">
+                    提示：照片需清晰可辨，系统将自动检测清晰度并打码隐私信息
+                </div>
+            </div>
+        </div>
+        <button class="collect-submit" id="submitCollect">提交采集</button>
+        <button class="save-draft" id="saveDraft">保存草稿</button>
+    </div>
+
+    <!-- 筛选面板 -->
+    <div class="filter-panel" id="filterPanel">
+        <div class="filter-title">筛选条件</div>
+
+        <div class="filter-group">
+            <label class="filter-label">搜索半径</label>
+            <div class="radius-options">
+                <div class="radius-option active" data-radius="1000">1公里</div>
+                <div class="radius-option" data-radius="5000">5公里</div>
+                <div class="radius-option" data-radius="10000">10公里</div>
+                <div class="radius-option" data-radius="0">全部</div>
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <label class="filter-label">消防栓状态</label>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="statusNormal" checked />
+                    <label for="statusNormal">正常</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="statusDamage" checked />
+                    <label for="statusDamage">损坏</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="statusAbandon" checked />
+                    <label for="statusAbandon">废弃</label>
+                </div>
+            </div>
+            <div class="filter-validation-error" id="statusError">
+                请至少选择一个状态
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <label class="filter-label">消防栓类型</label>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="typeGround" checked />
+                    <label for="typeGround">地上</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="typeUnderground" checked />
+                    <label for="typeUnderground">地下</label>
+                </div>
+            </div>
+            <div class="filter-validation-error" id="typeError">
+                请至少选择一个类型
+            </div>
+        </div>
+
+        <div class="filter-actions">
+            <button class="filter-reset" id="resetFilter">重置</button>
+            <button class="filter-confirm" id="confirmFilter">确认筛选</button>
+        </div>
+    </div>
+
+    <!-- 离线地图面板 -->
+    <div class="offline-panel" id="offlinePanel">
+        <i class="fa fa-times close-offline" id="closeOfflineBtn"></i>
+        <div class="offline-title">下载离线地图</div>
+        <div class="offline-desc">
+            下载中山市全域离线地图包（约200MB），支持无网络环境下地图浏览与导航
+        </div>
+        <button class="download-btn" id="downloadOfflineBtn">立即下载</button>
+    </div>
+
+    <!-- 用户详情面板 -->
+    <div class="user-panel" id="userPanel">
+        <div class="user-header">
+            <div class="user-back" id="closeUserBtn">
+                <i class="fa fa-arrow-left"></i>
+            </div>
+            <div class="user-title">个人中心</div>
+        </div>
+        <div class="user-content">
+            <div class="user-avatar">
+                <div class="avatar-icon">
+                    <i class="fa fa-user"></i>
+                </div>
+                <div class="user-name" id="userNameDisplay">用户名</div>
+                <div class="user-role" id="userRoleDisplay">角色</div>
+            </div>
+            <div class="user-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="statHydrants">0</div>
+                    <div class="stat-label">消防栓</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statCollections">0</div>
+                    <div class="stat-label">采集数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statDays">0</div>
+                    <div class="stat-label">使用天数</div>
+                </div>
+            </div>
+            <div class="user-menu">
+                <div class="menu-item" id="profileMenuItem">
+                    <div class="menu-icon">
+                        <i class="fa fa-id-card"></i>
+                    </div>
+                    <div class="menu-text">个人信息</div>
+                    <div class="menu-arrow">
+                        <i class="fa fa-chevron-right"></i>
+                    </div>
+                </div>
+                <div class="menu-item" id="historyMenuItem">
+                    <div class="menu-icon">
+                        <i class="fa fa-history"></i>
+                    </div>
+                    <div class="menu-text">操作记录</div>
+                    <div class="menu-arrow">
+                        <i class="fa fa-chevron-right"></i>
+                    </div>
+                </div>
+                <div class="menu-item" id="helpMenuItem">
+                    <div class="menu-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="menu-text">帮助中心</div>
+                    <div class="menu-arrow">
+                        <i class="fa fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+            <button class="logout-btn" id="logoutBtn">退出登录</button>
+        </div>
+    </div>
+
+
+    <!-- 个人信息面板 -->
+    <div class="profile-panel" id="profilePanel">
+        <div class="profile-header">
+            <div class="profile-back" id="closeProfileBtn">
+                <i class="fa fa-arrow-left"></i>
+            </div>
+            <div class="profile-title">个人信息</div>
+        </div>
+        <div class="profile-content">
+            <div class="profile-info">
+                <div class="profile-avatar">
+                    <div class="avatar-icon-large">
+                        <i class="fa fa-user"></i>
+                    </div>
+                </div>
+    
+                <div class="info-group">
+                    <div class="info-label">账号</div>
+                    <div class="info-value" id="profileUsername">--</div>
+                </div>
+    
+                <div class="info-group">
+                    <div class="info-label">姓名</div>
+                    <div class="info-value" id="profileRealName">--</div>
+                </div>
+    
+                <div class="info-group">
+                    <div class="info-label">角色</div>
+                    <div class="info-value" id="profileRole">--</div>
+                </div>
+    
+                <div class="info-group">
+                    <div class="info-label">状态</div>
+                    <div class="info-value" id="profileStatus">--</div>
+                </div>
+    
+                <div class="info-group">
+                    <div class="info-label">登录时间</div>
+                    <div class="info-value" id="profileCreatedAt">--</div>
+                </div>
+    
+                <div class="info-group">
+                    <div class="info-label">用户ID</div>
+                    <div class="info-value" id="profileUserId">--</div>
+                </div>
+            </div>
+
+    
+            <div class="profile-tips">
+                <div class="tip-title">
+                    <i class="fa fa-info-circle"></i>
+                    <span>提示</span>
+                </div>
+                <div class="tip-content">
+                    如需修改密码或其他敏感信息，请联系管理员
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 操作信息记录面板 -->
+    <div class="history-panel" id="historyPanel">
+        <div class="history-header">
+            <div class="history-back" id="closeHistoryBtn">
+                <i class="fa fa-arrow-left"></i>
+            </div>
+            <div class="history-title">操作记录</div>
+            <div class="history-refresh" id="refreshHistoryBtn">
+                <i class="fa fa-refresh"></i>
+            </div>
+        </div>
+        <div class="history-content">
+            <div class="history-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa fa-sign-in"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="totalLogins">0</div>
+                        <div class="stat-label">登录次数</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa fa-road"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="totalNavigations">0</div>
+                        <div class="stat-label">导航次数</div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="history-list" id="historyList">
+                <div class="history-empty" id="historyEmpty">
+                    <i class="fa fa-history"></i>
+                    <div>暂无操作记录</div>
+                </div>
+                <!-- 操作记录列表会动态生成在这里 -->
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- 提示信息 -->
+    <div class="loading-toast" id="loadingToast">处理中...</div>
+    <div class="result-toast" id="resultToast"></div>
+
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
