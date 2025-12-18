@@ -1,8 +1,7 @@
 {
   "name": "fire-hydrant-system",
   "version": "2.7.0",
-  "description": "中山市消防栓精准定位与导航系统",
-  "main": "server.js",
+  "main": "api/index.js", 
   "scripts": {
     "start": "node server.js"
   },
