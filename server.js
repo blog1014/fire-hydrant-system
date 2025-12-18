@@ -9,6 +9,7 @@ const AMAP_WEB_SERVICE_KEY = '27bfbdb0c1fabbc6d01fafa1066529fb';
 const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = 'fire_hydrant_secret_key_2024';
+const __dirname = process.cwd(); 
 
 // 中间件
 app.use(cors());
@@ -18,7 +19,7 @@ app.use(express.static('public'));
 // ============ JSON文件持久化实现 ============
 
 // 数据文件路径
-const __dirname = process.cwd(); // 使用当前工作目录
+
 const DATA_DIR = path.join(__dirname, 'data');
 const DATA_FILE = path.join(DATA_DIR, 'database.json');
 const BACKUP_DIR = path.join(DATA_DIR, 'backup');
@@ -1407,23 +1408,28 @@ app.delete('/api/hydrants/:id', authenticateToken, (req, res) => {
 
 // ============ 启动服务器 ============
 
-// 启动自动保存
-startAutoSave();
-
-const server = app.listen(PORT, () => {
-    console.log('=================================');
-    console.log('🔥 消防栓定位与导航系统服务器启动成功');
-    console.log('=================================');
-    console.log(`🌐 服务器运行在端口: ${PORT}`);
-    console.log('📂 项目根目录:', __dirname);
-    console.log('📁 数据目录:', DATA_DIR);
-    console.log('📄 数据库文件:', DATA_FILE);
-    console.log('');
-    console.log('🔑 测试账号信息:');
-    console.log('管理员账号: admin / admin123');
-    console.log('消防员账号: firefighter / 123456');
-    console.log('采集员账号: collector / 123456');
-    console.log('=================================');
-});
-// 导出server实例（Vercel需要）
-module.exports = server;
+// Vercel Serverless 适配
+if (process.env.VERCEL) {
+    // Vercel 环境：导出 app 供 Serverless 函数使用
+    console.log('✅ Vercel Serverless 环境启动');
+    module.exports = app;
+} else {
+    // 本地开发环境：正常启动服务器
+    startAutoSave();
+    app.listen(PORT, () => {
+        console.log('=================================');
+        console.log('🔥 消防栓定位与导航系统服务器启动成功');
+        console.log('=================================');
+        console.log(`🌐 服务器运行在端口: ${PORT}`);
+        console.log('📂 项目根目录:', __dirname);
+        console.log('📁 数据目录:', DATA_DIR);
+        console.log('📄 数据库文件:', DATA_FILE);
+        console.log('');
+        console.log('🔑 测试账号信息:');
+        console.log('管理员账号: admin / admin123');
+        console.log('消防员账号: firefighter / 123456');
+        console.log('采集员账号: collector / 123456');
+        console.log('=================================');
+    });
+    module.exports = app;
+}
