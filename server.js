@@ -14,7 +14,37 @@ const JWT_SECRET = 'fire_hydrant_secret_key_2024';
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+const staticPath = path.join(__dirname, 'public');
+console.log(' 静态文件路径:', staticPath);
+app.use(express.static(staticPath));
+
+app.get('/js/:file', (req, res) => {
+    const filePath = path.join(__dirname, 'public', 'js', req.params.file);
+    if (fs.existsSync(filePath)) {
+        res.sendFile(filePath);
+    } else {
+        res.status(404).send('File not found');
+    }
+});
+
+app.get('/css/:file', (req, res) => {
+    const filePath = path.join(__dirname, 'public', 'css', req.params.file);
+    if (fs.existsSync(filePath)) {
+        res.sendFile(filePath);
+    } else {
+        res.status(404).send('File not found');
+    }
+});
+
+
+app.get('*.html', (req, res) => {
+    const filePath = path.join(__dirname, 'public', req.path);
+    if (fs.existsSync(filePath)) {
+        res.sendFile(filePath);
+    } else {
+        res.status(404).send('Page not found');
+    }
+});
 
 
 
