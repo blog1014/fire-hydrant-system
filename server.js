@@ -1408,6 +1408,9 @@ app.delete('/api/hydrants/:id', authenticateToken, (req, res) => {
 
 // ============ 启动服务器 ============
 
+// 启动自动保存
+startAutoSave();
+
 // Vercel Serverless 适配
 if (process.env.VERCEL) {
     // Vercel 环境：导出 app 供 Serverless 函数使用
@@ -1415,7 +1418,7 @@ if (process.env.VERCEL) {
     module.exports = app;
 } else {
     // 本地开发环境：正常启动服务器
-    startAutoSave();
+    const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
         console.log('=================================');
         console.log('🔥 消防栓定位与导航系统服务器启动成功');
