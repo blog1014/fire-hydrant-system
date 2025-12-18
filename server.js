@@ -9,7 +9,7 @@ const AMAP_WEB_SERVICE_KEY = '27bfbdb0c1fabbc6d01fafa1066529fb';
 const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = 'fire_hydrant_secret_key_2024';
-const __dirname = process.cwd(); 
+
 
 
 app.use(cors());
@@ -1403,7 +1403,7 @@ if (process.env.VERCEL) {
     console.log('✅ Vercel Serverless 环境启动');
     module.exports = app;
 } else {
- 
+
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
         console.log('=================================');
